@@ -12,12 +12,12 @@ def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_bin = No
     logger = get_logger()
     if 'experiment' in db[doc['run_start']].start.keys():
         uid = doc['run_start']
-        if db[uid].start['experiment'] == 'fly_energy_scan':
+        experiment = db[uid].start['experiment']
+        if experiment == 'fly_energy_scan':
             path_to_file = db[uid].start['interp_filename']
             e0 = find_e0(db,uid)
             comments = create_file_header(db,uid)
             validate_path_exists(db,uid)
-
             path_to_file = validate_file_exists(path_to_file, file_type = 'interp')
             #print(f'>>>Path to file {path_to_file}')
             try:
@@ -46,8 +46,13 @@ def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_bin = No
             except:
                 logger.info(f'Binning failed for {path_to_file}')
 
-        elif db[uid].start['experiment'] == 'fly_energy_scan_em':
+        elif experiment == 'fly_energy_scan_em':
             logger.info('HAHAHAHHAHAH')
+
+
+        elif experiment == 'fly_energy_scan_with_xia':
+            pass
+
 
 
 
