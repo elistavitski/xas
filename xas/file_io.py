@@ -79,6 +79,53 @@ def load_dataset_from_files(db, uid):
 
     return arrays
 
+
+def load_dataset_from_db(db, uid):
+    def load_electrometer_data(header):
+        df = list(header.data('em1', stream_name='em1'))[0][0]
+        return df
+
+    def load_enc_data(header, stream_name):
+        df = pd.DataFrame()
+        df_raw = next(header.data(stream_name, stream_name=stream_name))
+        df['timestamp'] = df_raw['ts_s'] + 1e-9 * df_raw['ts_ns']
+        df['encoder'] = df_raw['encoder'].apply(lambda x: int(x) if int(x) <= 0 else -(int(x) ^ 0xffffff - 1))
+        return df
+
+
+    arrays = {}
+    header = db[uid]
+
+    for descriptor in header['descriptors']:
+        data = pd.DataFrame()
+        if 'devname' in descriptor['data_keys'][descriptor['name']]:
+            stream_devname = descriptor['data_keys'][descriptor['name']]['devname']
+        stream_source = descriptor['data_keys'][descriptor['name']]['source']
+
+        if stream_source == 'pizzabox-enc-file':
+            data = load_enc_data(header, descriptor['name'])
+            if stream_devname =='hhm_theta':
+                data.iloc[:,1] = xray.encoder2energy(data['encoder'], 360000,
+                                                     -float(header['start']['angle_offset']))
+                stream_name = 'energy'
+
+            arrays[stream_name] = data
+
+        elif stream_source == 'electrometer':
+            data = load_electrometer_data(header)
+            columns = data.columns[1:]
+            for column in columns:
+                df = pd.DataFrame()
+                df['timestamp'] = data['timestamp']
+                df['adc'] = data[column]
+                arrays[column] = df
+        else:
+            pass
+
+    return arrays
+
+
+
 def validate_file_exists(path_to_file,file_type = 'interp'):
     """The function checks if the file exists or not. If exists, it adds an index to the file name.
     """
