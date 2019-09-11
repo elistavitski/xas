@@ -56,22 +56,22 @@ class xiaparser:
         self.chan3 = []
         self.next_pos = 0
 
-    def parse(self, filename, filepath, silent=True, printheaders=False, plotdata=False, pixelnumber=None):
+    def parse(self, filename, silent=True, printheaders=False, plotdata=False, pixelnumber=None):
 
         self.filename = ''
         self.filepath = ''
         self.exporting_arrays = []
         self.next_pos = 0
 
-        if (filename != self.filename or filepath != self.filepath or pixelnumber != None):
+        if (filename != self.filename or pixelnumber != None):
             self.filename = filename
-            self.filepath = filepath
-            self.rootgrp = Dataset(str(Path(filepath) / Path(filename)), "r")
+
+            self.rootgrp = Dataset(filename, "r")
             self.data = self.rootgrp.variables["array_data"][:]
 
             if not silent:
                 print("-" * 80)
-                print("File name:", filepath + filename)
+                print("File name:",  filename)
                 print("-" * 80)
                 print("Total Data Shape:", self.data.shape)
                 if (pixelnumber != None):

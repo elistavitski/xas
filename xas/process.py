@@ -5,6 +5,7 @@ from .file_io import (load_dataset_from_files, create_file_header, validate_file
 from .interpolate import interpolate
 
 from .xas_logger import get_logger
+from .file_io_xia import load_dataset_from_xia
 
 
 
@@ -51,8 +52,20 @@ def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_bin = No
 
 
         elif experiment == 'fly_energy_scan_with_xia':
-            pass
+            path_to_file = db[uid].start['interp_filename']
 
+            e0 = find_e0(db, uid)
+            comments = create_file_header(db, uid)
+            validate_path_exists(db, uid)
+            path_to_file = validate_file_exists(path_to_file, file_type='interp')
+            # print(f'>>>Path to file {path_to_file}')
+            try:
+                raw_df = load_dataset_from_files(db, uid)
+                logger.info(f'Loading file successful for UID {uid}/{path_to_file}')
+            except:
+                logger.info(f'Loading file failed for UID {uid}/{path_to_file}')
+
+            raw_df_xia = load_dataset_from_xia(path_to_xia_file)
 
 
 
