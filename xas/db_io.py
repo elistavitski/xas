@@ -3,7 +3,6 @@ from  . import xray
 import pandas as pd
 
 def load_dataset_em(db,uid):
-    record = db[uid]
     arrays = {}
     hdr = db[uid]
     adc_data = list(hdr.data('em1', stream_name='em1'))[0][0]
@@ -19,7 +18,7 @@ def load_dataset_em(db,uid):
     array['timestamp'] = enc_data['ts_s'] + 1e-9 *enc_data['ts_ns']
     encoder = enc_data['encoder'].apply(lambda x: int(x) if int(x) <= 0 else -(int(x) ^ 0xffffff - 1))
     array['energy'] = xray.encoder2energy(encoder, 360000,
-                                          -float(record['start']['angle_offset']))
+                                          -float(hdr['start']['angle_offset']))
 
     arrays['energy'] = array
 
