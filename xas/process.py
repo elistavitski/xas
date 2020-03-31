@@ -13,7 +13,8 @@ def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_binnned 
     logger = get_logger()
     if 'experiment' in db[doc['run_start']].start.keys():
         uid = doc['run_start']
-        if db[uid].start['experiment'] == 'fly_energy_scan':
+        experiment = db[uid].start['experiment']
+        if experiment == 'fly_energy_scan':
             path_to_file = db[uid].start['interp_filename']
             e0 = find_e0(db, uid)
             comments = create_file_header(db, uid)
@@ -51,6 +52,8 @@ def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_binnned 
                     print('Energy E0 is not defined')
             except:
                 logger.info(f'Binning failed for {path_to_file}')
+        elif  experiment == 'fly_energy_scan_xs3':
+            pass
 
 
 
