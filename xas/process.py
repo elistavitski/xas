@@ -4,6 +4,7 @@ from .file_io import (load_dataset_from_files, create_file_header, validate_file
 from .interpolate import interpolate
 
 from .xas_logger import get_logger
+from .xs3 import load_data_with_xs3
 
 from datetime import datetime
 
@@ -11,6 +12,7 @@ from datetime import datetime
 def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_binnned = None):
 
     logger = get_logger()
+
     if 'experiment' in db[doc['run_start']].start.keys():
         uid = doc['run_start']
         experiment = db[uid].start['experiment']
@@ -53,9 +55,25 @@ def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_binnned 
             except:
                 logger.info(f'Binning failed for {path_to_file}')
         elif  experiment == 'fly_energy_scan_xs3':
-            pass
+            print('we are here')
+            path_to_file = db[uid].start['interp_filename']
+            e0 = find_e0(db, uid)
+            comments = create_file_header(db, uid)
+            validate_path_exists(db, uid)
 
-
+            path_to_file = validate_file_exists(path_to_file, file_type='interp')
+            print(f'>>>Path to file {path_to_file}')
+            try:
+                raw_df = load_data_with_xs3(db, uid)
+                logger.info(f'Loading file successful for UID {uid}/{path_to_file}')
+            except:
+                logger.info(f'Loading file failed for UID {uid}/{path_to_file}')
+            try:
+                interpolated_df = interpolate(raw_df)
+                logger.info(f'Interpolation successful for {path_to_file}')
+                save_interpolated_df_as_file(path_to_file, interpolated_df, comments)
+            except:
+                logger.info(f'Interpolation failed for {path_to_file}')
 
 
 def process_interpolate_only(doc, db):
