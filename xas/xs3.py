@@ -5,8 +5,6 @@ import numpy as np
 import pandas as pd
 from . import xray
 
-
-
 def load_data_with_xs3(db,uid):
 
     doc= db[uid].start
@@ -31,15 +29,7 @@ def load_data_with_xs3(db,uid):
         t= trigger.ts_s + 1e-9 * trigger.ts_ns
         triggers.append(t)
 
-
-
-
-
-
-
-
-
-            # def load_adc_trace(filename='', master = True):
+    #  def load_adc_trace(filename='', master = True):
     #     df=pd.DataFrame()
     #     keys = ['times', 'timens', 'counter', 'adc_master', 'adc_slave']
     #     if os.path.isfile(filename):
