@@ -42,12 +42,9 @@ def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_binnned 
                     binned_df = bin(interpolated_df, e0)
                     logger.info(f'Binning successful for {path_to_file}')
                     save_binned_df_as_file(path_to_file, binned_df, comments)
-                    print('Just before IF')
                     if draw_func_interp is not None:
-                        print('Made the first IF')
                         draw_func_interp(interpolated_df)
                     if draw_func_binned is not None:
-                        print('Made the second IF')
                         draw_func_binned(binned_df)
                     print('Inside xas process try draw (e0 > 0) end time: ', datetime.now())
                 else:
@@ -64,6 +61,7 @@ def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_binnned 
             path_to_file = validate_file_exists(path_to_file, file_type='interp')
             print(f'>>>Path to file {path_to_file}')
             try:
+                raw_df = load_dataset_from_files(db, uid)
                 raw_df = load_data_with_xs3(db, uid)
                 logger.info(f'Loading file successful for UID {uid}/{path_to_file}')
             except:
