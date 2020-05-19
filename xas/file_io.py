@@ -52,9 +52,16 @@ def load_dataset_from_files(db,uid):
     for stream in record['descriptors']:
         data = pd.DataFrame()
         stream_device = stream['name']
-        stream_name = stream['data_keys'][stream['name']]['devname']
+        # WIP Another terrible hack
+        try:
+            stream_name = stream['data_keys'][stream['name']]['devname']
+            stream_file = stream['data_keys'][stream['name']]['filename']
+        except:
+            stream_name = None
+            stream_file = None
+
         stream_source = stream['data_keys'][stream['name']]['source']
-        stream_file = stream['data_keys'][stream['name']]['filename']
+
         print(stream_file)
 
         if stream_source == 'pizzabox-di-file':
@@ -85,8 +92,8 @@ def load_dataset_from_files(db,uid):
                                                        -float(record['start']['angle_offset']))
                 stream_name = 'energy'
                 print(f'STREAM NAME {stream_name}')
-
-        arrays[stream_name] = data
+        if stream_name is not None:
+            arrays[stream_name] = data
 
     return arrays
 

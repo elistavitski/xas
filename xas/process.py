@@ -52,17 +52,24 @@ def process_interpolate_bin(doc, db, draw_func_interp = None, draw_func_binnned 
             except:
                 logger.info(f'Binning failed for {path_to_file}')
         elif  experiment == 'fly_energy_scan_xs3':
-            print('we are here')
+            #print('we are here')
             path_to_file = db[uid].start['interp_filename']
             e0 = find_e0(db, uid)
             comments = create_file_header(db, uid)
             validate_path_exists(db, uid)
 
             path_to_file = validate_file_exists(path_to_file, file_type='interp')
-            print(f'>>>Path to file {path_to_file}')
+            #print(f'>>>Path to file {path_to_file}')
             try:
                 raw_df = load_dataset_from_files(db, uid)
-                raw_df = load_data_with_xs3(db, uid)
+                #print('Before adding rois', raw_df.keys())
+                xs_df = load_data_with_xs3(db, uid)
+                for i, roi in enumerate(xs_df):
+                    roi_name = f'ROI{i}'
+                    raw_df[roi_name] = roi
+
+
+                #print('After adding rois', raw_df.keys())
                 logger.info(f'Loading file successful for UID {uid}/{path_to_file}')
             except:
                 logger.info(f'Loading file failed for UID {uid}/{path_to_file}')

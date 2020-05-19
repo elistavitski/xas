@@ -48,7 +48,7 @@ def load_data_with_xs3(db,uid):
 
 
 
-    if len(triggers_up) >= len(r1):
+    if len(triggers_up) >= len(roi1):
         last_num = len(r1)
         ROI1['timestamp']= triggers_up[0:last_num]
         ROI1['roi'] = roi1
