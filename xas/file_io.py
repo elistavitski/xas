@@ -55,8 +55,10 @@ def load_dataset_from_files(db,uid):
         # WIP Another terrible hack
         try:
             stream_name = stream['data_keys'][stream['name']]['devname']
+            print(f'STREAM {stream_name}')
             stream_file = stream['data_keys'][stream['name']]['filename']
         except:
+            print('STREAM IS NOT FOUND')
             stream_name = None
             stream_file = None
 
@@ -142,6 +144,45 @@ def create_file_header(db,uid):
     human_stop_time = str(datetime.fromtimestamp(stop_time).strftime('%m/%d/%Y  %H:%M:%S'))
     human_duration = str(datetime.fromtimestamp(stop_time - start_time).strftime('%M:%S'))
 
+    hdr = db[uid]
+    foil_e = hdr.start['foil']
+    foil_element = foil_e[0]
+
+    hutchB_ion_chamber_gain = hdr.start ['keithley_gainsB']
+    hutchB_i0_gain = hutchB_ion_chamber_gain[0]
+    hutchB_it_gain = hutchB_ion_chamber_gain[1]
+    hutchB_ir_gain = hutchB_ion_chamber_gain[2]
+    hutchB_iff_gain = hutchB_ion_chamber_gain[3]
+
+    hutchB_ionchamber_GasRate = hdr.start['ionchamber_ratesB']
+    hutchB_ion_chamber_gas_i0_He = hutchB_ionchamber_GasRate[0]
+    hutchB_ion_chamber_gas_i0_N2 = hutchB_ionchamber_GasRate[1]
+    hutchB_ion_chamber_gas_i0_Ar = hutchB_ionchamber_GasRate[2]
+    hutchB_ion_chamber_gas_it_N2 = hutchB_ionchamber_GasRate[3]
+    hutchB_ion_chamber_gas_it_Ar = hutchB_ionchamber_GasRate[4]
+
+    hutchB_incpathPos = hdr.start['incident_beampathB']
+    hutchB_incpath_vertical = hutchB_incpathPos[0]
+
+    hutchB_slitsPos = hdr.start['incident_slits']
+    hutchB_slits_top      = hutchB_slitsPos[0]
+    hutchB_slits_bottom   = hutchB_slitsPos[1]
+    hutchB_slits_inboard  = hutchB_slitsPos[2]
+    hutchB_slits_outboard = hutchB_slitsPos[3]
+
+    hutchB_samplestagePos = hdr.start['sample_stageB']
+    hutchB_samplestage_rot = hutchB_samplestagePos[0]
+    hutchB_samplestage_x   = hutchB_samplestagePos[1]
+    hutchB_samplestage_y   = hutchB_samplestagePos[2]
+    hutchB_samplestage_z   = hutchB_samplestagePos[3]
+
+    pe_verticalPos = hdr.start['pe_vertical']
+    pe_vertical = pe_verticalPos[0]
+
+    cm_horizontalPos = hdr.start['cm_horizontal']
+    frontend_cm_xu = cm_horizontalPos[0]
+    frontend_cm_xd = cm_horizontalPos[1]
+
     if 'trajectory_name' in db[uid]['start']:
         trajectory_name = db[uid]['start']['trajectory_name']
     else:
@@ -162,7 +203,7 @@ def create_file_header(db,uid):
     else:
         e0 = ''
 
-    comments ='# Facility: {}\n'\
+    comments =   '# Facility: {}\n'\
                  '# Beamline: {}\n'\
                  '# Year: {}\n' \
                  '# Cycle: {}\n' \
@@ -171,14 +212,23 @@ def create_file_header(db,uid):
                  '# Proposal: {}\n'\
                  '# Scan ID: {}\n' \
                  '# UID: {}\n'\
-                 '# Comment: {}\n'\
+                 '# Comment: {}\n' \
+                 '# Start time: {}\n' \
+                 '# Stop time: {}\n' \
+                 '# Total time: {}\n' \
                  '# Trajectory name: {}\n'\
                  '# Element: {}\n'\
                  '# Edge: {}\n'\
                  '# E0: {}\n'\
-                 '# Start time: {}\n'\
-                 '# Stop time: {}\n' \
-                 '# Total time: {}\n#\n# '.format(
+                 '# Reference Foil Element: {}\n'\
+                 '# Keithley Gains I0: 1E{} V/A It: 1E{} V/A Iref: 1E{} V/A PIPS: 1E{} V/A \n'\
+                 '# Ion Chamber Gas Flow Rates: I0: {:.2f} sccm He + {:.2f} sccm N2 + {:.2f} sccm Ar \n'\
+                 '# Ion Chamber Gas Flow Rates: It&Iref: {:.2f} sccm N2 + {:.2f} sccm Ar\n'\
+                 '# Incident Beam Path Vertical: {:.2f} mm\n'\
+                 '# Incident Slits Positions B: TOP: {} mm Bottom: {} mm Inboard: {} mm Outboard: {} mm\n'\
+                 '# Sample Stage Positions: Rotation: {} deg Horizontal: {} mm Vertical: {} mm Beam Direction: {} mm\n'\
+                 '# PerkinElmer Vertical Position: {:.2f} mm\n'\
+                 '# Front End Mirror Horizontal Positions: Up: {} mm Down: {} mm\n#\n# '.format(
                   facility,
                   beamline,
                   year,
@@ -189,13 +239,22 @@ def create_file_header(db,uid):
                   scan_id,
                   real_uid,
                   comment,
+                  human_start_time,
+                  human_stop_time,
+                  human_duration,
                   trajectory_name,
                   element,
                   edge,
                   e0,
-                  human_start_time,
-                  human_stop_time,
-                  human_duration)
+                  foil_element,
+                  hutchB_i0_gain, hutchB_it_gain, hutchB_ir_gain, hutchB_iff_gain,
+                  hutchB_ion_chamber_gas_i0_He, hutchB_ion_chamber_gas_i0_N2, hutchB_ion_chamber_gas_i0_Ar,
+                  hutchB_ion_chamber_gas_it_N2, hutchB_ion_chamber_gas_it_Ar,
+                  hutchB_incpath_vertical,
+                  hutchB_slits_top, hutchB_slits_bottom, hutchB_slits_inboard, hutchB_slits_outboard,
+                  hutchB_samplestage_rot, hutchB_samplestage_x, hutchB_samplestage_y, hutchB_samplestage_z,
+                  pe_vertical,
+                  frontend_cm_xu, frontend_cm_xd)
     return  comments
 
 def find_e0(db, uid):
