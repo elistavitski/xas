@@ -226,9 +226,9 @@ def create_file_header(db,uid):
                  '# Ion Chamber Gas Flow Rates: It&Iref: {:.2f} sccm N2 + {:.2f} sccm Ar\n'\
                  '# Incident Beam Path Vertical: {:.2f} mm\n'\
                  '# Incident Slits Positions B: TOP: {} mm Bottom: {} mm Inboard: {} mm Outboard: {} mm\n'\
-                 '# Sample Stage Positions: Rotation: {} deg Horizontal: {} mm Vertical: {} mm Beam Direction: {} mm\n'\
+                 '# Sample Stage Positions: Rotation: {} deg Horizontal: {:.2f} mm Vertical: {:.2f} mm Beam Direction: {:.2f} mm\n'\
                  '# PerkinElmer Vertical Position: {:.2f} mm\n'\
-                 '# Front End Mirror Horizontal Positions: Up: {} mm Down: {} mm\n#\n# '.format(
+                 '# Front End Mirror Horizontal Positions: Up: {:.2f} mm Down: {:.2f} mm\n#\n# '.format(
                   facility,
                   beamline,
                   year,
