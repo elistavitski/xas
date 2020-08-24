@@ -145,10 +145,10 @@ def create_file_header(db,uid):
     human_duration = str(datetime.fromtimestamp(stop_time - start_time).strftime('%M:%S'))
 
     hdr = db[uid]
-    foil_e = hdr.start['foil']
+    foil_e = hdr.start['foil_element']
     foil_element = foil_e[0]
 
-    hutchB_ion_chamber_gain = hdr.start ['keithley_gainsB']
+    hutchB_ion_chamber_gain = hdr.start['keithley_gainsB']
     hutchB_i0_gain = hutchB_ion_chamber_gain[0]
     hutchB_it_gain = hutchB_ion_chamber_gain[1]
     hutchB_ir_gain = hutchB_ion_chamber_gain[2]
